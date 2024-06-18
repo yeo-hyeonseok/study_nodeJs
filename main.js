@@ -8,6 +8,11 @@ const app = http.createServer((req, res) => {
   const queryData = url.parse(_url, true).query;
   const pathname = url.parse(_url, true).pathname;
   let title = queryData.id ?? "main";
+  const fileNames = fs.readdirSync("data", (error, result) => {
+    if (error) throw error;
+
+    return result;
+  });
 
   if (pathname === "/") {
     fs.readFile(`data/${title}.html`, "utf-8", (error, data) => {
@@ -23,9 +28,13 @@ const app = http.createServer((req, res) => {
       <body>
         <h1><a href="/">WEB</a></h1>
         <ol>
-          <li><a href="/?id=html">HTML</a></li>
-          <li><a href="/?id=css">CSS</a></li>
-          <li><a href="/?id=js">JavaScript</a></li>
+        ${fileNames
+          .map((item) => {
+            const trim = item.split(".")[0];
+
+            return `<li><a href="/?id=${trim}">${trim}</a></li>`;
+          })
+          .join("")}
         </ol>
         <h2>${title}</h2>
         ${data}
