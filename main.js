@@ -8,11 +8,7 @@ const app = http.createServer((req, res) => {
   const queryData = url.parse(_url, true).query;
   const pathname = url.parse(_url, true).pathname;
   let title = queryData.id ?? "main";
-  const fileNames = fs.readdirSync("data", (error, result) => {
-    if (error) throw error;
-
-    return result;
-  });
+  const fileNames = fs.readdirSync("data");
 
   if (pathname === "/") {
     fs.readFile(`data/${title}.html`, "utf-8", (error, data) => {
