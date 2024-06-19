@@ -1,46 +1,29 @@
 const http = require("http");
 const fs = require("fs");
 const url = require("url");
+const { mainPageTemplate } = require("./templates/mainPage");
 
 const app = http.createServer((req, res) => {
   const _url = req.url;
   // url의 쿼리스트링 정보 반환
   const queryData = url.parse(_url, true).query;
   const pathname = url.parse(_url, true).pathname;
-  let title = queryData.id ?? "main";
-  const fileNames = fs.readdirSync("data");
 
   if (pathname === "/") {
-    fs.readFile(`data/${title}.html`, "utf-8", (error, data) => {
-      if (error) throw error;
+    let title = queryData.id;
+    const fileNames = fs.readdirSync("data").map((item) => item.split(".")[0]);
 
-      const template = `
-      <!doctype html>
-      <html>
-      <head>
-        <title>WEB1 - ${title}</title>
-        <meta charset="utf-8">
-      </head>
-      <body>
-        <h1><a href="/">WEB</a></h1>
-        <ol>
-        ${fileNames
-          .map((item) => {
-            const trim = item.split(".")[0];
+    if (title) {
+      fs.readFile(`data/${title}.html`, "utf-8", (error, data) => {
+        if (error) throw error;
 
-            return `<li><a href="/?id=${trim}">${trim}</a></li>`;
-          })
-          .join("")}
-        </ol>
-        <h2>${title}</h2>
-        ${data}
-      </body>
-      </html>
-      `;
-
+        res.writeHead(200);
+        res.end(mainPageTemplate(title, fileNames, data));
+      });
+    } else {
       res.writeHead(200);
-      res.end(template);
-    });
+      res.end(mainPageTemplate("main", fileNames, "main"));
+    }
   } else {
     res.writeHead(404);
     res.end("Not Found");
