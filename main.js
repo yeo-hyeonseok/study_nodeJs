@@ -1,20 +1,22 @@
 const http = require("http");
 const fs = require("fs");
 const url = require("url");
+const qs = require("querystring");
 const { mainPageTemplate } = require("./templates/mainPage");
+const { writePageTemplate } = require("./templates/writePage");
 
 const app = http.createServer((req, res) => {
   const _url = req.url;
   // url의 쿼리스트링 정보 반환
   const queryData = url.parse(_url, true).query;
   const pathname = url.parse(_url, true).pathname;
+  const fileNames = fs.readdirSync("data");
 
   if (pathname === "/") {
     let title = queryData.id;
-    const fileNames = fs.readdirSync("data").map((item) => item.split(".")[0]);
 
     if (title) {
-      fs.readFile(`data/${title}.html`, "utf-8", (error, data) => {
+      fs.readFile(`data/${title}`, "utf-8", (error, data) => {
         if (error) throw error;
 
         res.writeHead(200);
@@ -24,6 +26,23 @@ const app = http.createServer((req, res) => {
       res.writeHead(200);
       res.end(mainPageTemplate("main", fileNames, "main"));
     }
+  } else if (pathname == "/write") {
+    res.writeHead(200);
+    res.end(writePageTemplate("write", fileNames));
+  } else if (pathname == "/write_process") {
+    let body = "";
+
+    req.on("data", (data) => (body += data));
+    req.on("end", () => {
+      const post = qs.parse(body);
+
+      fs.writeFile(`data/${post.title}`, post.content, (err) => {
+        if (err) throw err;
+
+        res.writeHead(302, { location: `/?id=${post.title}` });
+        res.end();
+      });
+    });
   } else {
     res.writeHead(404);
     res.end("Not Found");

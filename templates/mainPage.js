@@ -3,19 +3,19 @@ exports.mainPageTemplate = (title, categoryList, desc) => {
     <!doctype html>
     <html>
     <head>
-      <title>WEB1 - ${title}</title>
+      <title>WEB - ${title}</title>
       <meta charset="utf-8">
     </head>
     <body>
       <h1><a href="/">WEB</a></h1>
-      <ol>
+      <ul>
       ${categoryList
         .map((item) => `<li><a href="/?id=${item}">${item}</a></li>`)
         .join("")}
-      </ol>
+      </ul>
+      <a href="/write">write</a>
       <h2>${title}</h2>
-      <p></p>
-      ${desc}
+      <p>${desc}</p>      
     </body>
     </html>
     `;
