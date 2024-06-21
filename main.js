@@ -7,7 +7,6 @@ const { writePageTemplate } = require("./templates/writePage");
 
 const app = http.createServer((req, res) => {
   const _url = req.url;
-  // url의 쿼리스트링 정보 반환
   const queryData = url.parse(_url, true).query;
   const pathname = url.parse(_url, true).pathname;
   const fileNames = fs.readdirSync("data");
@@ -16,19 +15,35 @@ const app = http.createServer((req, res) => {
     let title = queryData.id;
 
     if (title) {
-      fs.readFile(`data/${title}`, "utf-8", (error, data) => {
-        if (error) throw error;
+      fs.readFile(`data/${title}`, "utf-8", (err, data) => {
+        if (err) throw err;
 
         res.writeHead(200);
-        res.end(mainPageTemplate(title, fileNames, data));
+        res.end(
+          mainPageTemplate({
+            title,
+            categoryList: fileNames,
+            controls: `<a href="/update?id=${title}" style="margin-right:6px">update</a>`,
+            desc: data,
+          })
+        );
       });
     } else {
       res.writeHead(200);
-      res.end(mainPageTemplate("main", fileNames, "main"));
+      res.end(
+        mainPageTemplate({
+          title: "main",
+          categoryList: fileNames,
+          controls: '<a href="/write">write</a>',
+          desc: "main",
+        })
+      );
     }
   } else if (pathname == "/write") {
     res.writeHead(200);
-    res.end(writePageTemplate("write", fileNames));
+    res.end(
+      writePageTemplate({ action: "/write_process", categoryList: fileNames })
+    );
   } else if (pathname == "/write_process") {
     let body = "";
 
@@ -36,24 +51,52 @@ const app = http.createServer((req, res) => {
     req.on("end", () => {
       const post = qs.parse(body);
 
-      fs.writeFile(`data/${post.title}`, post.content, (err) => {
+      fs.writeFile(`data/${post.title}`, post.desc, (err) => {
         if (err) throw err;
 
         res.writeHead(302, { location: `/?id=${post.title}` });
         res.end();
       });
     });
+  } else if (pathname == "/update") {
+    const title = queryData.id;
+
+    fs.readFile(`data/${title}`, "utf-8", (err, data) => {
+      if (err) throw err;
+
+      res.writeHead(200);
+      res.end(
+        writePageTemplate({
+          id: title,
+          action: "update_process",
+          categoryList: fileNames,
+          title: title,
+          desc: data,
+        })
+      );
+    });
+  } else if (pathname == "/update_process") {
+    let body = "";
+
+    req.on("data", (data) => (body += data));
+    req.on("end", () => {
+      const post = qs.parse(body);
+
+      fs.rename(`data/${post.id}`, `data/${post.title}`, (err) => {
+        if (err) throw err;
+
+        fs.writeFile(`data/${post.title}`, post.desc, (err) => {
+          if (err) throw err;
+
+          res.writeHead(302, { location: `/?id=${post.title}` });
+          res.end();
+        });
+      });
+    });
   } else {
     res.writeHead(404);
     res.end("Not Found");
   }
-
-  /* 
-    - 사용자로부터 요청이 들어오면 그에 맞는 페이지를 현재 디렉토리에서 찾아서 응답을 해주는 거임
-    - __dirname: nodejs에서 제공하는 전역 변수로 현재 실행 중인 스크립트가 포함된 디렉토리의 절대 경로를 가리킴. 비슷한 걸로 __filename이 있는데,
-      얘는 현재 실행 중인 스크립트의 절대 경로를 가리킴.    
-  res.end(fs.readFileSync(__dirname + _url));
-  */
 });
 
 app.listen(3000);

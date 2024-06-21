@@ -1,9 +1,15 @@
-exports.writePageTemplate = (title, categoryList) => {
+exports.writePageTemplate = ({
+  id,
+  action = "/",
+  categoryList,
+  title = "",
+  desc = "",
+}) => {
   return `
       <!doctype html>
       <html>
       <head>
-        <title>WEB - ${title}</title>
+        <title>WEB - ${id ? "update" : "write"}</title>
         <meta charset="utf-8">
       </head>
       <body>
@@ -13,11 +19,11 @@ exports.writePageTemplate = (title, categoryList) => {
           .map((item) => `<li><a href="/?id=${item}">${item}</a></li>`)
           .join("")}
         </ul>
-        <a href="/write">write</a>
-        <h2>${title}</h2>
-        <form action="/write_process" method="post">
-          <p><input type="text" name="title" placeholder="제목 쓰셈" /></p>
-          <div><textarea name="content" name="content" placeholder="내용 쓰셈"></textarea><div/>          
+        <h2>${id ? "update" : "write"}</h2>
+        <form action=${action} method="post">
+          <input type="hidden" name="id" value=${id} />
+          <p><input type="text" name="title" placeholder="제목 쓰셈" value="${title}" /></p>
+          <div><textarea name="desc" name="desc" placeholder="내용 쓰셈">${desc}</textarea><div/>          
           <input type="submit" />
         </form>
       </body>

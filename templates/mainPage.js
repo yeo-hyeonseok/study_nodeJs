@@ -1,4 +1,4 @@
-exports.mainPageTemplate = (title, categoryList, desc) => {
+exports.mainPageTemplate = ({ title, categoryList, controls, desc }) => {
   return `
     <!doctype html>
     <html>
@@ -13,7 +13,7 @@ exports.mainPageTemplate = (title, categoryList, desc) => {
         .map((item) => `<li><a href="/?id=${item}">${item}</a></li>`)
         .join("")}
       </ul>
-      <a href="/write">write</a>
+      <p>${controls}</p>
       <h2>${title}</h2>
       <p>${desc}</p>      
     </body>
