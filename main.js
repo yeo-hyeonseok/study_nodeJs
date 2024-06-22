@@ -23,7 +23,12 @@ const app = http.createServer((req, res) => {
           mainPageTemplate({
             title,
             categoryList: fileNames,
-            controls: `<a href="/update?id=${title}" style="margin-right:6px">update</a>`,
+            controls: `
+            <a href="/update?id=${title}">update</a>
+            <form action="/delete_process" method="post">
+              <input type="hidden" name="id" value=${title} />
+              <button type="submit">delete</button>
+            </form>`,
             desc: data,
           })
         );
@@ -68,7 +73,7 @@ const app = http.createServer((req, res) => {
       res.end(
         writePageTemplate({
           id: title,
-          action: "update_process",
+          action: "/update_process",
           categoryList: fileNames,
           title: title,
           desc: data,
@@ -91,6 +96,20 @@ const app = http.createServer((req, res) => {
           res.writeHead(302, { location: `/?id=${post.title}` });
           res.end();
         });
+      });
+    });
+  } else if (pathname == "/delete_process") {
+    let body = "";
+
+    req.on("data", (data) => (body += data));
+    req.on("end", () => {
+      const post = qs.parse(body);
+
+      fs.unlink(`data/${post.id}`, (err) => {
+        if (err) throw err;
+
+        res.writeHead(302, { location: "/" });
+        res.end();
       });
     });
   } else {
