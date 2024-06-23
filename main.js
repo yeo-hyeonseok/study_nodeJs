@@ -2,8 +2,9 @@ const http = require("http");
 const fs = require("fs");
 const url = require("url");
 const qs = require("querystring");
-const { mainPageTemplate } = require("./templates/mainPage");
-const { writePageTemplate } = require("./templates/writePage");
+const path = require("path");
+const mainPageTemplate = require("./templates/mainPageTemplate");
+const writePageTemplate = require("./templates/writePageTemplate");
 
 const app = http.createServer((req, res) => {
   const _url = req.url;
@@ -12,21 +13,21 @@ const app = http.createServer((req, res) => {
   const fileNames = fs.readdirSync("data");
 
   if (pathname === "/") {
-    let title = queryData.id;
+    if (queryData.id) {
+      const filteredId = path.parse(queryData.id).name;
 
-    if (title) {
-      fs.readFile(`data/${title}`, "utf-8", (err, data) => {
+      fs.readFile(`data/${filteredId}`, "utf-8", (err, data) => {
         if (err) throw err;
 
         res.writeHead(200);
         res.end(
           mainPageTemplate({
-            title,
+            title: filteredId,
             categoryList: fileNames,
             controls: `
-            <a href="/update?id=${title}">update</a>
+            <a href="/update?id=${filteredId}">update</a>
             <form action="/delete_process" method="post">
-              <input type="hidden" name="id" value=${title} />
+              <input type="hidden" name="id" value=${filteredId} />
               <button type="submit">delete</button>
             </form>`,
             desc: data,
@@ -64,18 +65,18 @@ const app = http.createServer((req, res) => {
       });
     });
   } else if (pathname == "/update") {
-    const title = queryData.id;
+    const filteredId = path.parse(queryData.id).name;
 
-    fs.readFile(`data/${title}`, "utf-8", (err, data) => {
+    fs.readFile(`data/${filteredId}`, "utf-8", (err, data) => {
       if (err) throw err;
 
       res.writeHead(200);
       res.end(
         writePageTemplate({
-          id: title,
+          id: filteredId,
           action: "/update_process",
           categoryList: fileNames,
-          title: title,
+          title: filteredId,
           desc: data,
         })
       );
@@ -104,8 +105,9 @@ const app = http.createServer((req, res) => {
     req.on("data", (data) => (body += data));
     req.on("end", () => {
       const post = qs.parse(body);
+      const filteredId = path.parse(post.id).name;
 
-      fs.unlink(`data/${post.id}`, (err) => {
+      fs.unlink(`data/${filteredId}`, (err) => {
         if (err) throw err;
 
         res.writeHead(302, { location: "/" });

@@ -1,4 +1,4 @@
-exports.mainPageTemplate = ({ title, categoryList, controls, desc }) => {
+module.exports = ({ title, categoryList, controls, desc }) => {
   return `
     <!doctype html>
     <html>

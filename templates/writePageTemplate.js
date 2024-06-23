@@ -1,4 +1,4 @@
-exports.writePageTemplate = ({
+module.exports = ({
   id,
   action = "/",
   categoryList,
