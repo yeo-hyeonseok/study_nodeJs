@@ -3,6 +3,7 @@ const fs = require("fs");
 const url = require("url");
 const qs = require("querystring");
 const path = require("path");
+const sanitizeHtml = require("sanitize-html");
 const mainPageTemplate = require("./templates/mainPageTemplate");
 const writePageTemplate = require("./templates/writePageTemplate");
 
@@ -19,6 +20,16 @@ const app = http.createServer((req, res) => {
       fs.readFile(`data/${filteredId}`, "utf-8", (err, data) => {
         if (err) throw err;
 
+        /** 
+          특정 태그나 속성은 허용하고 싶다면 이런 식으로 쓰면 됨
+          sanitizeHtml(dirty, {
+            allowedTags: [ 'b', 'i', 'em', 'strong', 'a' ],
+            allowedAttributes: {'a': [ 'href' ]},
+            allowedIframeHostnames: ['www.youtube.com']
+          })
+        */
+        const sanitizedData = sanitizeHtml(data);
+
         res.writeHead(200);
         res.end(
           mainPageTemplate({
@@ -30,7 +41,7 @@ const app = http.createServer((req, res) => {
               <input type="hidden" name="id" value=${filteredId} />
               <button type="submit">delete</button>
             </form>`,
-            desc: data,
+            desc: sanitizedData,
           })
         );
       });

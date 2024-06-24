@@ -1,0 +1,22 @@
+{
+  "name": "study_nodejs",
+  "version": "1.0.0",
+  "description": "- 생활코딩 WEB2 NodeJs: https://opentutorials.org/module/3549 - 생활코딩 WEB3 Express: https://www.youtube.com/watch?v=hwknmhLKgYg - 노마드코더 줌 클론코딩: https://nomadcoders.co/noom",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yeo-hyeonseok/study_nodeJs.git"
+  },
+  "author": "wilddev_seok",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yeo-hyeonseok/study_nodeJs/issues"
+  },
+  "homepage": "https://github.com/yeo-hyeonseok/study_nodeJs#readme",
+  "dependencies": {
+    "sanitize-html": "^2.13.0"
+  }
+}
