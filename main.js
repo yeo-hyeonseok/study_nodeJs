@@ -6,55 +6,60 @@ const path = require("path");
 const sanitizeHtml = require("sanitize-html");
 const mainPageTemplate = require("./templates/mainPageTemplate");
 const writePageTemplate = require("./templates/writePageTemplate");
+const express = require("express");
+const app = express();
 
-const app = http.createServer((req, res) => {
-  const _url = req.url;
-  const queryData = url.parse(_url, true).query;
-  const pathname = url.parse(_url, true).pathname;
-  const fileNames = fs.readdirSync("data");
+const fileNames = fs.readdirSync("data");
 
-  if (pathname === "/") {
-    if (queryData.id) {
-      const filteredId = path.parse(queryData.id).name;
+app.get("/", (_, res) => {
+  res.send(
+    mainPageTemplate({
+      title: "main",
+      categoryList: fileNames,
+      controls: '<a href="/write">write</a>',
+      desc: "main",
+    })
+  );
+});
 
-      fs.readFile(`data/${filteredId}`, "utf-8", (err, data) => {
-        if (err) throw err;
+app.get("/page/:pageId", (req, res) => {
+  const filteredId = path.parse(req.params.pageId).name;
 
-        /** 
-          특정 태그나 속성은 허용하고 싶다면 이런 식으로 쓰면 됨
-          sanitizeHtml(dirty, {
-            allowedTags: [ 'b', 'i', 'em', 'strong', 'a' ],
-            allowedAttributes: {'a': [ 'href' ]},
-            allowedIframeHostnames: ['www.youtube.com']
-          })
-        */
-        const sanitizedData = sanitizeHtml(data);
+  fs.readFile(`data/${filteredId}`, "utf-8", (err, data) => {
+    if (err) throw err;
 
-        res.writeHead(200);
-        res.end(
-          mainPageTemplate({
-            title: filteredId,
-            categoryList: fileNames,
-            controls: `
+    const sanitizedData = sanitizeHtml(data);
+
+    res.send(
+      mainPageTemplate({
+        title: filteredId,
+        categoryList: fileNames,
+        controls: `
             <a href="/update?id=${filteredId}">update</a>
             <form action="/delete_process" method="post">
               <input type="hidden" name="id" value=${filteredId} />
               <button type="submit">delete</button>
             </form>`,
-            desc: sanitizedData,
-          })
-        );
-      });
+        desc: sanitizedData,
+      })
+    );
+  });
+});
+
+app.listen(3000, () => console.log("3000번 포트 연결 중..."));
+
+/*
+
+const app = http.createServer((req, res) => {
+  const _url = req.url;
+  const queryData = url.parse(_url, true).query;
+  const pathname = url.parse(_url, true).pathname;  
+
+  if (pathname === "/") {
+    if (queryData.id) {
+      // 상세 페이지 보여주기
     } else {
-      res.writeHead(200);
-      res.end(
-        mainPageTemplate({
-          title: "main",
-          categoryList: fileNames,
-          controls: '<a href="/write">write</a>',
-          desc: "main",
-        })
-      );
+      // 메인 페이지 보여주기
     }
   } else if (pathname == "/write") {
     res.writeHead(200);
@@ -130,5 +135,4 @@ const app = http.createServer((req, res) => {
     res.end("Not Found");
   }
 });
-
-app.listen(3000);
+*/

@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/yeo-hyeonseok/study_nodeJs#readme",
   "dependencies": {
+    "express": "^4.19.2",
     "sanitize-html": "^2.13.0"
   }
 }

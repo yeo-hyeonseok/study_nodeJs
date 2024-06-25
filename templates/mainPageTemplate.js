@@ -10,7 +10,7 @@ module.exports = ({ title, categoryList, controls, desc }) => {
       <h1><a href="/">WEB</a></h1>
       <ul>
       ${categoryList
-        .map((item) => `<li><a href="/?id=${item}">${item}</a></li>`)
+        .map((item) => `<li><a href="/page/${item}">${item}</a></li>`)
         .join("")}
       </ul>
       <p>${controls}</p>
