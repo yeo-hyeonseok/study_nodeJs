@@ -1,6 +1,4 @@
-const http = require("http");
 const fs = require("fs");
-const url = require("url");
 const qs = require("querystring");
 const path = require("path");
 const sanitizeHtml = require("sanitize-html");
@@ -12,10 +10,12 @@ const app = express();
 const fileNames = fs.readdirSync("data");
 
 app.get("/", (_, res) => {
+  const _fileNames = fs.readdirSync("data");
+
   res.send(
     mainPageTemplate({
       title: "main",
-      categoryList: fileNames,
+      categoryList: _fileNames,
       controls: '<a href="/write">write</a>',
       desc: "main",
     })
@@ -24,6 +24,7 @@ app.get("/", (_, res) => {
 
 app.get("/page/:pageId", (req, res) => {
   const filteredId = path.parse(req.params.pageId).name;
+  const _fileNames = fs.readdirSync("data");
 
   fs.readFile(`data/${filteredId}`, "utf-8", (err, data) => {
     if (err) throw err;
@@ -33,9 +34,9 @@ app.get("/page/:pageId", (req, res) => {
     res.send(
       mainPageTemplate({
         title: filteredId,
-        categoryList: fileNames,
+        categoryList: _fileNames,
         controls: `
-            <a href="/update?id=${filteredId}">update</a>
+            <a href="/update/${filteredId}">update</a>
             <form action="/delete_process" method="post">
               <input type="hidden" name="id" value=${filteredId} />
               <button type="submit">delete</button>
@@ -46,93 +47,80 @@ app.get("/page/:pageId", (req, res) => {
   });
 });
 
-app.listen(3000, () => console.log("3000번 포트 연결 중..."));
+app.get("/write", (_, res) => {
+  res.send(
+    writePageTemplate({ action: "/write_process", categoryList: fileNames })
+  );
+});
 
-/*
+app.post("/write_process", (req, res) => {
+  let body = "";
 
-const app = http.createServer((req, res) => {
-  const _url = req.url;
-  const queryData = url.parse(_url, true).query;
-  const pathname = url.parse(_url, true).pathname;  
+  req.on("data", (data) => (body += data));
+  req.on("end", () => {
+    const post = qs.parse(body);
 
-  if (pathname === "/") {
-    if (queryData.id) {
-      // 상세 페이지 보여주기
-    } else {
-      // 메인 페이지 보여주기
-    }
-  } else if (pathname == "/write") {
-    res.writeHead(200);
-    res.end(
-      writePageTemplate({ action: "/write_process", categoryList: fileNames })
+    fs.writeFile(`data/${post.title}`, post.desc, (err) => {
+      if (err) throw err;
+
+      res.redirect(302, `/page/${post.title}`);
+    });
+  });
+});
+
+app.get("/update/:pageId", (req, res) => {
+  const filteredId = path.parse(req.params.pageId).name;
+
+  fs.readFile(`data/${filteredId}`, "utf-8", (err, data) => {
+    if (err) throw err;
+
+    const sanitizedData = sanitizeHtml(data);
+
+    res.send(
+      writePageTemplate({
+        id: filteredId,
+        action: "/update_process",
+        categoryList: fileNames,
+        title: filteredId,
+        desc: sanitizedData,
+      })
     );
-  } else if (pathname == "/write_process") {
-    let body = "";
+  });
+});
 
-    req.on("data", (data) => (body += data));
-    req.on("end", () => {
-      const post = qs.parse(body);
+app.post("/update_process", (req, res) => {
+  let body = "";
+
+  req.on("data", (data) => (body += data));
+  req.on("end", () => {
+    const post = qs.parse(body);
+
+    fs.rename(`data/${post.id}`, `data/${post.title}`, (err) => {
+      if (err) throw err;
 
       fs.writeFile(`data/${post.title}`, post.desc, (err) => {
         if (err) throw err;
 
-        res.writeHead(302, { location: `/?id=${post.title}` });
-        res.end();
+        res.redirect(302, `/page/${post.title}`);
       });
     });
-  } else if (pathname == "/update") {
-    const filteredId = path.parse(queryData.id).name;
+  });
+});
 
-    fs.readFile(`data/${filteredId}`, "utf-8", (err, data) => {
+app.post("/delete_process", (req, res) => {
+  let body = "";
+
+  req.on("data", (data) => (body += data));
+  req.on("end", () => {
+    const post = qs.parse(body);
+    const filteredId = path.parse(post.id).name;
+
+    fs.unlink(`data/${filteredId}`, (err) => {
       if (err) throw err;
 
-      res.writeHead(200);
-      res.end(
-        writePageTemplate({
-          id: filteredId,
-          action: "/update_process",
-          categoryList: fileNames,
-          title: filteredId,
-          desc: data,
-        })
-      );
+      res.redirect(302, "/");
     });
-  } else if (pathname == "/update_process") {
-    let body = "";
-
-    req.on("data", (data) => (body += data));
-    req.on("end", () => {
-      const post = qs.parse(body);
-
-      fs.rename(`data/${post.id}`, `data/${post.title}`, (err) => {
-        if (err) throw err;
-
-        fs.writeFile(`data/${post.title}`, post.desc, (err) => {
-          if (err) throw err;
-
-          res.writeHead(302, { location: `/?id=${post.title}` });
-          res.end();
-        });
-      });
-    });
-  } else if (pathname == "/delete_process") {
-    let body = "";
-
-    req.on("data", (data) => (body += data));
-    req.on("end", () => {
-      const post = qs.parse(body);
-      const filteredId = path.parse(post.id).name;
-
-      fs.unlink(`data/${filteredId}`, (err) => {
-        if (err) throw err;
-
-        res.writeHead(302, { location: "/" });
-        res.end();
-      });
-    });
-  } else {
-    res.writeHead(404);
-    res.end("Not Found");
-  }
+  });
 });
-*/
+
+app.listen(3000, () => console.log("3000번 포트 연결 중..."));
