@@ -5,7 +5,12 @@ const sanitizeHtml = require("sanitize-html");
 const mainPageTemplate = require("./templates/mainPageTemplate");
 const writePageTemplate = require("./templates/writePageTemplate");
 const express = require("express");
+const bodyParser = require("body-parser");
+
 const app = express();
+
+app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json()); <= json 형식의 요청 데이터를 해석하려면 이거 쓰셈, 위에는 form 형식 데이터 받아올 때
 
 const fileNames = fs.readdirSync("data");
 
@@ -54,17 +59,12 @@ app.get("/write", (_, res) => {
 });
 
 app.post("/write_process", (req, res) => {
-  let body = "";
+  const post = req.body;
 
-  req.on("data", (data) => (body += data));
-  req.on("end", () => {
-    const post = qs.parse(body);
+  fs.writeFile(`data/${post.title}`, post.desc, (err) => {
+    if (err) throw err;
 
-    fs.writeFile(`data/${post.title}`, post.desc, (err) => {
-      if (err) throw err;
-
-      res.redirect(302, `/page/${post.title}`);
-    });
+    res.redirect(302, `/page/${post.title}`);
   });
 });
 
@@ -89,37 +89,27 @@ app.get("/update/:pageId", (req, res) => {
 });
 
 app.post("/update_process", (req, res) => {
-  let body = "";
+  const post = req.body;
 
-  req.on("data", (data) => (body += data));
-  req.on("end", () => {
-    const post = qs.parse(body);
+  fs.rename(`data/${post.id}`, `data/${post.title}`, (err) => {
+    if (err) throw err;
 
-    fs.rename(`data/${post.id}`, `data/${post.title}`, (err) => {
+    fs.writeFile(`data/${post.title}`, post.desc, (err) => {
       if (err) throw err;
 
-      fs.writeFile(`data/${post.title}`, post.desc, (err) => {
-        if (err) throw err;
-
-        res.redirect(302, `/page/${post.title}`);
-      });
+      res.redirect(302, `/page/${post.title}`);
     });
   });
 });
 
 app.post("/delete_process", (req, res) => {
-  let body = "";
+  const post = req.body;
+  const filteredId = path.parse(post.id).name;
 
-  req.on("data", (data) => (body += data));
-  req.on("end", () => {
-    const post = qs.parse(body);
-    const filteredId = path.parse(post.id).name;
+  fs.unlink(`data/${filteredId}`, (err) => {
+    if (err) throw err;
 
-    fs.unlink(`data/${filteredId}`, (err) => {
-      if (err) throw err;
-
-      res.redirect(302, "/");
-    });
+    res.redirect(302, "/");
   });
 });
 
