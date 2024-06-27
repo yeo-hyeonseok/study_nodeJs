@@ -11,18 +11,26 @@ const writePageTemplate = require("./templates/writePageTemplate");
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(bodyParser.json()); <= json 형식의 요청 데이터를 해석하려면 이거 쓰셈, 위에는 form 형식 데이터 받아올 때
 app.use(compression());
+/*
+app.use((req, _, next) => {
+  req.categoryList = fs.readdirSync("data");
+  next(); // 다음 미들웨어 실행하쇼 라는 뜻
+});
 
-const fileNames = fs.readdirSync("data");
+- 근데 이렇게 하면 req.categoryList가 필요없는 경우에도 해당 미들웨어를 호출하게 됨
+- 아래와 같이 하면 특정 방식 또는 path의 요청이 들어왔을 때만 미들웨어를 호출할 수 있도록 설정할 수 있음 
+*/
+app.get("*", (req, _, next) => {
+  req.categoryList = fs.readdirSync("data");
+  next(); // 다음 미들웨어 실행하쇼 라는 뜻
+});
 
-app.get("/", (_, res) => {
-  const _fileNames = fs.readdirSync("data");
-
+app.get("/", (req, res) => {
   res.send(
     mainPageTemplate({
       title: "main",
-      categoryList: _fileNames,
+      categoryList: req.categoryList,
       controls: '<a href="/write">write</a>',
       desc: "main",
     })
@@ -31,7 +39,6 @@ app.get("/", (_, res) => {
 
 app.get("/page/:pageId", (req, res) => {
   const filteredId = path.parse(req.params.pageId).name;
-  const _fileNames = fs.readdirSync("data");
 
   fs.readFile(`data/${filteredId}`, "utf-8", (err, data) => {
     if (err) throw err;
@@ -41,7 +48,7 @@ app.get("/page/:pageId", (req, res) => {
     res.send(
       mainPageTemplate({
         title: filteredId,
-        categoryList: _fileNames,
+        categoryList: req.categoryList,
         controls: `
             <a href="/update/${filteredId}">update</a>
             <form action="/delete_process" method="post">
@@ -54,9 +61,12 @@ app.get("/page/:pageId", (req, res) => {
   });
 });
 
-app.get("/write", (_, res) => {
+app.get("/write", (req, res) => {
   res.send(
-    writePageTemplate({ action: "/write_process", categoryList: fileNames })
+    writePageTemplate({
+      action: "/write_process",
+      categoryList: req.categoryList,
+    })
   );
 });
 
@@ -82,7 +92,7 @@ app.get("/update/:pageId", (req, res) => {
       writePageTemplate({
         id: filteredId,
         action: "/update_process",
-        categoryList: fileNames,
+        categoryList: req.categoryList,
         title: filteredId,
         desc: sanitizedData,
       })
