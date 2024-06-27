@@ -2,15 +2,17 @@ const fs = require("fs");
 const qs = require("querystring");
 const path = require("path");
 const sanitizeHtml = require("sanitize-html");
-const mainPageTemplate = require("./templates/mainPageTemplate");
-const writePageTemplate = require("./templates/writePageTemplate");
 const express = require("express");
 const bodyParser = require("body-parser");
+const compression = require("compression");
+const mainPageTemplate = require("./templates/mainPageTemplate");
+const writePageTemplate = require("./templates/writePageTemplate");
 
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(bodyParser.json()); <= json 형식의 요청 데이터를 해석하려면 이거 쓰셈, 위에는 form 형식 데이터 받아올 때
+app.use(compression());
 
 const fileNames = fs.readdirSync("data");
 
