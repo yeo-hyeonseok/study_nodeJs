@@ -11,6 +11,7 @@ module.exports = ({
       <head>
         <title>WEB - ${id ? "update" : "write"}</title>
         <meta charset="utf-8">
+        <link rel="stylesheet" href="/css/index.css" />
       </head>
       <body>
         <h1><a href="/">WEB</a></h1>

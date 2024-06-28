@@ -1,0 +1,143 @@
+@font-face {
+  font-family: "neon";
+  src: url("../fonts/HBIOS-SYS.ttf") format("truetype");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  color: #fcfcfc;
+  list-style-type: none;
+}
+
+body {
+  font-family: "neon";
+  background-color: #0000a8;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  font-size: 1.2rem;
+}
+
+div::-webkit-scrollbar {
+  display: none;
+}
+
+h1.section_title {
+  background-color: #0000a8;
+  padding: 0 0.5rem;
+  position: absolute;
+  top: -1.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2rem;
+}
+
+ul {
+  list-style-type: square;
+}
+
+button {
+  display: inline-block;
+  background: none;
+  color: #fcfcfc;
+  padding: 0 0.5rem;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  font-size: 2rem;
+}
+
+button:hover {
+  background-color: #fcfcfc;
+  color: #0000a8;
+}
+
+a {
+  display: inline-block;
+  text-decoration-line: none;
+  font-size: 2rem;
+  padding: 0 0.5rem;
+}
+
+a:hover {
+  background-color: #fcfcfc;
+  color: #0000a8;
+}
+
+b {
+  color: #fcfc54;
+}
+
+div.container {
+  display: flex;
+  min-height: 0;
+  flex-grow: 1;
+  padding: 1.5rem;
+  gap: 1.5rem;
+}
+
+section.left_section {
+  flex: 35%;
+  padding: 1rem 4px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border: 6px double #fcfcfc;
+}
+
+section.left_section > div {
+  overflow-y: scroll;
+}
+
+section.left_section a {
+  width: 100%;
+}
+
+section.left_section ul > li.post_item > a {
+  padding-left: 1rem;
+}
+
+section.right_section {
+  flex: 65%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+section.right_section > div.controls {
+  display: flex;
+}
+
+section.right_section > div.description {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0 1rem;
+  margin-top: 1.5rem;
+  position: relative;
+  border: 6px double #fcfcfc;
+}
+
+section.right_section > div.description > div.content {
+  flex-grow: 1;
+  overflow-y: scroll;
+}
+
+section.right_section > div.description > div.content > h2.content_title {
+  font-size: 2rem;
+  margin-top: 1rem;
+}
+
+section.right_section > div.description > div.content > p.content_desc {
+  margin: 1rem 0;
+}
+
+footer {
+  background-color: black;
+  color: #fcfcfc;
+  padding: 0.5rem 1.5rem;
+  font-size: 1.5rem;
+  text-align: right;
+}
