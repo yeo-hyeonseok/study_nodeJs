@@ -5,29 +5,62 @@ module.exports = ({
   title = "",
   desc = "",
 }) => {
-  return `
-      <!doctype html>
-      <html>
+  return /* HTML */ `
+    <!DOCTYPE html>
+    <html>
       <head>
         <title>WEB - ${id ? "update" : "write"}</title>
-        <meta charset="utf-8">
+        <meta charset="utf-8" />
         <link rel="stylesheet" href="/css/index.css" />
       </head>
       <body>
-        <h1><a href="/">WEB</a></h1>
-        <ul>
-        ${categoryList
-          .map((item) => `<li><a href="/?id=${item}">${item}</a></li>`)
-          .join("")}
-        </ul>
-        <h2>${id ? "update" : "write"}</h2>
-        <form action=${action} method="post">
-          <input type="hidden" name="id" value=${id} />
-          <p><input type="text" name="title" placeholder="제목 쓰셈" value="${title}" /></p>
-          <div><textarea name="desc" name="desc" placeholder="내용 쓰셈">${desc}</textarea><div/>          
-          <input type="submit" />
-        </form>
+        <div class="container">
+          <section class="left_section">
+            <h1 class="section_title">Routes</h1>
+            <div>
+              <a href="/">WEB</a>
+              <ul>
+                ${categoryList
+                  .map(
+                    (item) =>
+                      `<li class="post_item">
+                        <a href="/page/${item}">↳ ${item}</a>
+                      </li>`
+                  )
+                  .join("")}
+              </ul>
+            </div>
+          </section>
+          <section class="right_section">
+            <div class="description">
+              <h1 class="section_title">${id ? "Update" : "Write"}</h1>
+              <div class="content">
+                <form action=${action} class="write_form" method="post">
+                  <input type="hidden" name="id" value=${id} />
+                  <input
+                    type="text"
+                    name="title"
+                    class="title_input"
+                    placeholder="title..."
+                    value="${title}"
+                  />
+                  <textarea
+                    name="desc"
+                    class="desc_textarea"
+                    placeholder="desc..."
+                  >
+${desc}</textarea
+                  >
+                  <div>
+                    <button type="submit">submit</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </section>
+        </div>
+        <footer>Web3-ExpressJs...</footer>
       </body>
-      </html>
-      `;
+    </html>
+  `;
 };

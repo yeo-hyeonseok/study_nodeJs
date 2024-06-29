@@ -69,6 +69,11 @@ b {
   color: #fcfc54;
 }
 
+textarea:focus,
+input:focus {
+  outline: none;
+}
+
 div.container {
   display: flex;
   min-height: 0;
@@ -107,6 +112,7 @@ section.right_section {
 
 section.right_section > div.controls {
   display: flex;
+  margin-bottom: 1.5rem;
 }
 
 section.right_section > div.description {
@@ -115,13 +121,15 @@ section.right_section > div.description {
   flex-direction: column;
   min-height: 0;
   padding: 0 1rem;
-  margin-top: 1.5rem;
   position: relative;
   border: 6px double #fcfcfc;
 }
 
 section.right_section > div.description > div.content {
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   overflow-y: scroll;
 }
 
@@ -132,6 +140,50 @@ section.right_section > div.description > div.content > h2.content_title {
 
 section.right_section > div.description > div.content > p.content_desc {
   margin: 1rem 0;
+}
+
+section.right_section > div.description > div.content > form.write_form {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 2rem 0 1rem 0;
+}
+
+section.right_section
+  > div.description
+  > div.content
+  > form.write_form
+  > input.title_input {
+  background-color: #0000a8;
+  border: 2px solid #fcfcfc;
+  box-sizing: border-box;
+  display: inline-block;
+  font-family: inherit;
+  font-size: 1.5rem;
+  width: 100%;
+  padding: 1rem;
+}
+
+section.right_section
+  > div.description
+  > div.content
+  > form.write_form
+  > textarea {
+  flex-grow: 1;
+  width: 100%;
+  border: 2px solid #fcfcfc;
+  box-sizing: border-box;
+  background-color: #0000a8;
+  font-family: inherit;
+  font-size: 1.5rem;
+  padding: 1rem;
+  resize: none;
+}
+
+section.right_section > div.description > div.content > form.write_form > div {
+  text-align: end;
 }
 
 footer {
