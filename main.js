@@ -41,11 +41,11 @@ app.get("/", (req, res) => {
   );
 });
 
-app.get("/page/:pageId", (req, res) => {
+app.get("/page/:pageId", (req, res, next) => {
   const filteredId = path.parse(req.params.pageId).name;
 
   fs.readFile(`data/${filteredId}`, "utf-8", (err, data) => {
-    if (err) throw err;
+    if (err) next(err);
 
     const sanitizedData = sanitizeHtml(data);
 
@@ -128,6 +128,15 @@ app.post("/delete_process", (req, res) => {
 
     res.redirect(302, "/");
   });
+});
+
+app.use((req, res, next) => {
+  res.status(404).send("없는 페이지임");
+});
+
+app.use((err, req, res, next) => {
+  console.log(err.stack);
+  res.status(500).send("올바르지 않은 요청임");
 });
 
 app.listen(3000, () => console.log("3000번 포트 연결 중..."));
