@@ -18,7 +18,7 @@ module.exports = ({ title, categoryList, controls, desc }) => {
                   .map(
                     (item) =>
                       `<li class="post_item">
-                      <a href="/page/${item}">↳ ${item}</a>
+                      <a href="/post/${item}">↳ ${item}</a>
                     </li>`
                   )
                   .join("")}
