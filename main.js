@@ -3,12 +3,25 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const compression = require("compression");
 const helmet = require("helmet");
+const csp = require("helmet-csp");
 const mainRouter = require("./routes");
 const postRouter = require("./routes/post");
 
 const app = express();
 
 app.use(helmet());
+app.use(
+  csp({
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'"],
+      scriptSrc: [
+        "'self'",
+        "'sha256-Zm3YvhPCrKLfocvDtRTsjqgdnN0s/gYtwXGf0A8CzrI='",
+      ],
+    },
+  })
+);
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(compression());

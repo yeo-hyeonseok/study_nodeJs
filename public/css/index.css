@@ -183,7 +183,8 @@ section.right_section
 }
 
 section.right_section > div.description > div.content > form.write_form > div {
-  text-align: end;
+  display: flex;
+  justify-content: space-between;
 }
 
 footer {

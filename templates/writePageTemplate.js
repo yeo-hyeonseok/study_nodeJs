@@ -52,6 +52,7 @@ module.exports = ({
 ${desc}</textarea
                   >
                   <div>
+                    <button id="goBackButton" type="button">back</button>
                     <button type="submit">submit</button>
                   </div>
                 </form>
@@ -59,6 +60,13 @@ ${desc}</textarea
             </div>
           </section>
         </div>
+        <script>
+          document
+            .getElementById("goBackButton")
+            .addEventListener("click", function () {
+              history.back();
+            });
+        </script>
         <footer>Web3-ExpressJs...</footer>
       </body>
     </html>
