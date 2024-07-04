@@ -1,0 +1,12 @@
+section.post_list
+    h1.title Routes
+    div
+        a(href="/") WEB
+        ul 
+            each item in postList
+                li.post_item
+                    a(href=`/post/${item}`) ↳ #{item}
+         
+
+
+
