@@ -1,0 +1,13 @@
+section.right_section     
+    div.description
+        h1.title Write
+        div.content
+            form(action="/post/write_process", method="post").write_form
+                input(type="hidden", name="id", value=`${id}`) 
+                input(type="text", name="title", placeholder="title...", value=`${title || ""}`).title_input
+                textarea(name="desc", placeholder="desc...").desc_textarea #{desc}
+                div               
+                    button(type="button")#goBackButton back
+                    button(type="submit") submit 
+
+
