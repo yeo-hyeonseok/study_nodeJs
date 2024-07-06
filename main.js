@@ -1,33 +1,22 @@
 const fs = require("fs");
 const express = require("express");
+const path = require("path");
 const bodyParser = require("body-parser");
 const compression = require("compression");
 const helmet = require("helmet");
-const csp = require("helmet-csp");
 const mainRouter = require("./routes");
 const postRouter = require("./routes/post");
 
 const app = express();
 
+app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 app.use(helmet());
-app.use(
-  csp({
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'"],
-      scriptSrc: [
-        "'self'",
-        "'sha256-Zm3YvhPCrKLfocvDtRTsjqgdnN0s/gYtwXGf0A8CzrI='",
-      ],
-    },
-  })
-);
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(compression());
 app.get("*", (req, _, next) => {
-  req.categoryList = fs.readdirSync("data");
+  req.postList = fs.readdirSync("data");
   next();
 });
 
@@ -41,6 +30,7 @@ app.use((_, res) => {
     .status(404)
     .render("error", { errorCode: 404, desc: "존재하지 않는 페이지입니다." });
 });
+
 app.use((err, req, res, next) => {
   console.log(err.stack);
   res

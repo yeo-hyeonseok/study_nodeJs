@@ -23,7 +23,7 @@ div::-webkit-scrollbar {
   display: none;
 }
 
-h1.section_title {
+h1.title {
   background-color: #0000a8;
   padding: 0 0.5rem;
   position: absolute;
@@ -78,11 +78,11 @@ div.container {
   display: flex;
   min-height: 0;
   flex-grow: 1;
-  padding: 1.5rem;
+  padding: 1rem;
   gap: 1.5rem;
 }
 
-section.left_section {
+section.post_list {
   flex: 35%;
   padding: 1rem 4px;
   display: flex;
@@ -91,15 +91,15 @@ section.left_section {
   border: 6px double #fcfcfc;
 }
 
-section.left_section > div {
+section.post_list > div {
   overflow-y: scroll;
 }
 
-section.left_section a {
+section.post_list a {
   width: 100%;
 }
 
-section.left_section ul > li.post_item > a {
+section.post_list ul > li.post_item > a {
   padding-left: 1rem;
 }
 
@@ -138,8 +138,16 @@ section.right_section > div.description > div.content > h2.content_title {
   margin-top: 1rem;
 }
 
-section.right_section > div.description > div.content > p.content_desc {
-  margin: 1rem 0;
+section.right_section > div.description > div.content > div.content_desc {
+  margin-top: 1rem;
+}
+
+section.right_section
+  > div.description
+  > div.content
+  > div.content_desc
+  p.main_content_desc {
+  margin-top: 1rem;
 }
 
 section.right_section > div.description > div.content > form.write_form {
