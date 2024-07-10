@@ -1,0 +1,45 @@
+* {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+body {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+}
+
+h1.main_title {
+  margin-bottom: 1rem;
+}
+
+div.container {
+  width: 40%;
+  min-width: 400px;
+  border: 1px solid black;
+}
+
+p {
+  padding: 1rem;
+  text-align: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  font-size: 1.5rem;
+  padding: 0.5rem;
+}
+
+button {
+  cursor: pointer;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+}

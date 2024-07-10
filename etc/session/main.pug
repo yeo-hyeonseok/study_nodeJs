@@ -1,8 +1,8 @@
 doctype html
 html   
   head
-    title COOKIE
-    link(rel='stylesheet', href='/cookies.css')    
+    title SESSION
+    link(rel='stylesheet', href='/session.css')    
   body    
       h1.main_title #{isAuth ? "로그인 됨" : "로그인 안됨"}
       form(action=`${isAuth ? "/logout_process" : "/login"}`, method=`${isAuth ? "post" : "get"}`) 
