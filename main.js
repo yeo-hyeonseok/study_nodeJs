@@ -1,9 +1,14 @@
+require("dotenv").config();
 const fs = require("fs");
 const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
 const compression = require("compression");
 const helmet = require("helmet");
+const session = require("express-session");
+const FileStore = require("session-file-store")(session);
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
 const mainRouter = require("./routes");
 const postRouter = require("./routes/post");
 
@@ -15,6 +20,19 @@ app.use(helmet());
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(compression());
+app.use(
+  session({
+    cookie: {
+      secure: false,
+      httpOnly: true,
+      maxAge: 300000,
+    },
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    store: new FileStore(),
+  })
+);
 app.get("*", (req, _, next) => {
   req.postList = fs.readdirSync("data");
   next();
