@@ -11,6 +11,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const mainRouter = require("./routes");
 const postRouter = require("./routes/post");
+const authRouter = require("./routes/auth");
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.get("*", (req, _, next) => {
 /* 라우터 */
 app.use("/", mainRouter);
 app.use("/post", postRouter);
+app.use("/auth", authRouter);
 
 /* 에러 처리 */
 app.use((_, res) => {
