@@ -1,0 +1,59 @@
+div.login_container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+div.login_container > section.login_content {
+  flex-grow: 1;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  border: 6px double #fcfcfc;
+  align-items: center;
+}
+
+div.login_container > section.login_content > h1.login_title {
+  width: 100%;
+  font-size: 2rem;
+  text-align: center;
+  border-bottom: 2px dashed #fcfcfc;
+  padding: 0.5rem 0 1rem 0;
+}
+
+div.login_container > section.login_content > div {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 40%;
+}
+
+div.login_container > section.login_content > div > form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+div.login_container > section.login_content > div > form > label {
+  font-size: 2rem;
+}
+
+div.login_container > section.login_content > div > form > label > input {
+  background: none;
+  outline: none;
+  border: none;
+  font-size: 2rem;
+  font-family: inherit;
+  caret-color: #fcfcfc;
+}
+
+div.login_container > section.login_content > div > form > button {
+  display: none;
+}
+
+div.login_container > div {
+  display: flex;
+  margin-top: 1rem;
+}

@@ -112,7 +112,12 @@ section.right_section {
 
 section.right_section > div.controls {
   display: flex;
+  justify-content: space-between;
   margin-bottom: 1.5rem;
+}
+
+section.right_section > div.controls > div > form.delete_form {
+  display: inline-block;
 }
 
 section.right_section > div.description {

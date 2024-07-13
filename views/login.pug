@@ -2,4 +2,15 @@ extends layout.pug
 
 block content
     div.container
-        p 로그인 화면임     
+        div.login_container
+            section.login_content
+                h1.login_title Welcome Login 
+                div 
+                    form(action="/auth/login_process", method="post")
+                        label(for="user_id") id: 
+                            input(type="text", name="id", id="user_id", maxLength=15, autoFocus=true).id_input
+                        label(for="user_pw") pw: 
+                            input(type="password", name="pw", id="user_pw", maxLength=15).pw_input
+                        button(type="submit") 
+            div 
+                button#goBackButton back 
