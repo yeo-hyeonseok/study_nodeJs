@@ -7,10 +7,10 @@ block content
                 h1.login_title Welcome Login 
                 div 
                     form(action="/auth/login_process", method="post")
-                        label(for="user_id") id: 
-                            input(type="text", name="id", id="user_id", maxLength=15, autoFocus=true).id_input
-                        label(for="user_pw") pw: 
-                            input(type="password", name="pw", id="user_pw", maxLength=15).pw_input
+                        label(for="username") id: 
+                            input(type="text", name="username", id="username", maxLength=15, autoFocus=true).id_input
+                        label(for="password") pw: 
+                            input(type="password", name="password", id="password", maxLength=15).pw_input
                         button(type="submit") 
             div 
                 button#goBackButton back 
