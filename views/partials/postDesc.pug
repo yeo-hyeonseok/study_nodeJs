@@ -6,7 +6,7 @@ section.right_section
             form(action="/post/delete_process", method="post").delete_form
                 input(type="hidden", name="id", value=`${id}`)
                 button(type="submit").delete_button delete  
-        a(href="/auth/login") login 
+        a(href=`${isLogined ? "/auth/logout_process" : "/auth/login"}`) #{isLogined ? "logout" : "login"}
     div.description
         h1.title Description
         div.content

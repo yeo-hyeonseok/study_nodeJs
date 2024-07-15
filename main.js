@@ -60,6 +60,7 @@ passport.serializeUser(function (user, done) {
 
 // 3번, 이후 로그인 상태일 때부터는 세션에 존재하는 'id' 식별자를 통해서 db의 데이터 접근
 passport.deserializeUser(function (id, done) {
+  // req 객체에 authData 저장
   done(null, authData);
 });
 

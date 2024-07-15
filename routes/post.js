@@ -74,6 +74,7 @@ router.get("/:pageId", (req, res, next) => {
     const sanitizedData = sanitizeHtml(data);
 
     res.render("post", {
+      isLogined: req.user,
       id: filteredId,
       postList: req.postList,
       desc: sanitizedData,

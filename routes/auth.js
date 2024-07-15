@@ -13,4 +13,13 @@ router.get("/login", (req, res) => {
   res.send("로그인 했다 치고");
 });*/
 
+router.get("/logout_process", (req, res) => {
+  req.logOut((err) => {
+    if (err) throw err;
+
+    req.session.save();
+    res.redirect("/");
+  });
+});
+
 module.exports = router;
