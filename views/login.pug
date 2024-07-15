@@ -6,11 +6,12 @@ block content
             section.login_content
                 h1.login_title Welcome Login 
                 div 
-                    form(action="/auth/login_process", method="post")
+                    form(action="/auth/login_process", method="post")                                                
                         label(for="username") id: 
                             input(type="text", name="username", id="username", maxLength=15, autoFocus=true).id_input
                         label(for="password") pw: 
                             input(type="password", name="password", id="password", maxLength=15).pw_input
-                        button(type="submit") 
+                        button(type="submit")                                                
+                        span.error_message #{message}                
             div 
                 button#goBackButton back 

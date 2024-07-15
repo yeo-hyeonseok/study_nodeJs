@@ -34,6 +34,7 @@ div.login_container > section.login_content > div > form {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 div.login_container > section.login_content > div > form > label {
@@ -51,6 +52,15 @@ div.login_container > section.login_content > div > form > label > input {
 
 div.login_container > section.login_content > div > form > button {
   display: none;
+}
+
+div.login_container > section.login_content > div > form > span.error_message {
+  position: absolute;
+  top: -2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+  color: #fcfc54;
 }
 
 div.login_container > div {

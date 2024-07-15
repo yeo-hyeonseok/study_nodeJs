@@ -1,25 +1,31 @@
-const fs = require("fs");
-const path = require("path");
-const sanitizeHtml = require("sanitize-html");
 const express = require("express");
-
 const router = express.Router();
 
-router.get("/login", (req, res) => {
-  res.render("login");
-});
+module.exports = function (passport) {
+  router.get("/login", (req, res) => {
+    const message = req.flash("error");
 
-/*router.post("/login_process", (req, res) => {
-  res.send("로그인 했다 치고");
-});*/
-
-router.get("/logout_process", (req, res) => {
-  req.logOut((err) => {
-    if (err) throw err;
-
-    req.session.save();
-    res.redirect("/");
+    res.render("login", { message: message[0] });
   });
-});
 
-module.exports = router;
+  router.post(
+    "/login_process",
+    passport.authenticate("local", {
+      successRedirect: "/",
+      failureRedirect: "/auth/login",
+      failureFlash: true,
+      successFlash: true,
+    })
+  );
+
+  router.get("/logout_process", (req, res) => {
+    req.logOut((err) => {
+      if (err) throw err;
+
+      req.session.save();
+      res.redirect("/");
+    });
+  });
+
+  return router;
+};
