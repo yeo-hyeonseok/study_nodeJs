@@ -1,7 +1,9 @@
 section.right_section
     div.controls
         a(href="/post/write") write
-        a(href=`${isLogined ? "/auth/logout_process" : "/auth/login"}`) #{isLogined ? "logout" : "login"}
+        div 
+            a(href=`${isLogined ? "/auth/logout_process" : "/auth/login"}`) #{isLogined ? "logout" : "login"}
+            a(href="/auth/register") register 
     div.description
         h1.title Description
         div.content

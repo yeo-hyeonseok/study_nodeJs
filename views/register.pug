@@ -1,0 +1,19 @@
+extends layout.pug
+
+block content
+    div.container
+        div.login_container
+            section.login_content
+                h1.login_title Welcome Register 
+                div 
+                    form(action="/auth/register_process", method="post")                                                
+                        label(for="username") id: 
+                            input(type="text" , name="username", id="username", maxLength=15, autoFocus=true).id_input
+                        label(for="password") pw: 
+                            input(type="password", name="password", id="password", maxLength=15).pw_input
+                        label(for="password") pw_confirm: 
+                            input(type="password", name="password", id="password", maxLength=15).pw_input
+                        button(type="submit")                                                
+                        span.error_message #{message}                
+            div 
+                button#goBackButton back 

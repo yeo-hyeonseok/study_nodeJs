@@ -26,14 +26,14 @@ div.login_container > section.login_content > div {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 40%;
+  width: 30%;
 }
 
 div.login_container > section.login_content > div > form {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: start;
   position: relative;
 }
 
