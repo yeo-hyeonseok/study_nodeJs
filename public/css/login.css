@@ -26,7 +26,7 @@ div.login_container > section.login_content > div {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 30%;
+  width: 35%;
 }
 
 div.login_container > section.login_content > div > form {

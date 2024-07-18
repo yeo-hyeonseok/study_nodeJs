@@ -1,13 +1,36 @@
 const express = require("express");
 const router = express.Router();
+const low = require("lowdb");
+const FileSync = require("lowdb/adapters/FileSync");
+const shortId = require("shortid");
+
+const adapter = new FileSync("db.json");
+const db = low(adapter);
 
 module.exports = function (passport) {
   router.get("/register", (req, res) => {
-    res.render("register");
+    const message = req.flash("error");
+
+    res.render("register", { message: message[0] });
   });
 
   router.post("/register_process", (req, res) => {
-    res.send("회원가입 했다치고");
+    const { username, password, password_confirm } = req.body;
+
+    if (password !== password_confirm) {
+      req.flash("error", "Password must be same...");
+      return res.redirect("/auth/register");
+    }
+
+    db.get("users")
+      .push({
+        id: shortId.generate(),
+        username,
+        password,
+      })
+      .write();
+
+    res.redirect("/");
   });
 
   router.get("/login", (req, res) => {
