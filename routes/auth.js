@@ -15,10 +15,22 @@ module.exports = function (passport) {
   });
 
   router.post("/register_process", (req, res) => {
-    const { username, password, password_confirm } = req.body;
+    const { username, password, password2 } = req.body;
 
-    if (password !== password_confirm) {
+    const users = db.get("users").value();
+
+    if (username === "" || password === "" || password2 === "") {
+      req.flash("error", "There is empty field...");
+      return res.redirect("/auth/register");
+    }
+
+    if (password !== password2) {
       req.flash("error", "Password must be same...");
+      return res.redirect("/auth/register");
+    }
+
+    if (users.findIndex((item) => item.username === username) >= 0) {
+      req.flash("error", "Id already exist...");
       return res.redirect("/auth/register");
     }
 

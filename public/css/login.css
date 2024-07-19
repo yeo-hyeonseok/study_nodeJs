@@ -61,6 +61,7 @@ div.login_container > section.login_content > div > form > span.error_message {
   transform: translateX(-50%);
   font-size: 1.5rem;
   color: #fcfc54;
+  white-space: nowrap;
 }
 
 div.login_container > div {
