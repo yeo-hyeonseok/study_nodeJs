@@ -6,10 +6,14 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/write", (req, res) => {
-  res.render("write", {
-    action: "/post/write_process",
-    postList: req.postList,
-  });
+  if (req.user) {
+    res.render("write", {
+      action: "/post/write_process",
+      postList: req.postList,
+    });
+  } else {
+    res.render("login");
+  }
 });
 
 router.post("/write_process", (req, res) => {

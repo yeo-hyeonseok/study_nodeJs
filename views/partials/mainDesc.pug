@@ -3,7 +3,8 @@ section.right_section
         a(href="/post/write") write
         div 
             a(href=`${isLogined ? "/auth/logout_process" : "/auth/login"}`) #{isLogined ? "logout" : "login"}
-            a(href="/auth/register") register 
+            if !isLogined
+                a(href="/auth/register") register 
     div.description
         h1.title Description
         div.content

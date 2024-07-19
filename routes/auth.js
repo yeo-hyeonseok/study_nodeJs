@@ -1,11 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const low = require("lowdb");
-const FileSync = require("lowdb/adapters/FileSync");
 const shortId = require("shortid");
-
-const adapter = new FileSync("db.json");
-const db = low(adapter);
+const db = require("../lib/db");
 
 module.exports = function (passport) {
   router.get("/register", (req, res) => {
@@ -17,8 +13,6 @@ module.exports = function (passport) {
   router.post("/register_process", (req, res) => {
     const { username, password, password2 } = req.body;
 
-    const users = db.get("users").value();
-
     if (username === "" || password === "" || password2 === "") {
       req.flash("error", "There is empty field...");
       return res.redirect("/auth/register");
@@ -29,20 +23,26 @@ module.exports = function (passport) {
       return res.redirect("/auth/register");
     }
 
+    const users = db.get("users").value();
+
     if (users.findIndex((item) => item.username === username) >= 0) {
       req.flash("error", "Id already exist...");
       return res.redirect("/auth/register");
     }
 
-    db.get("users")
-      .push({
-        id: shortId.generate(),
-        username,
-        password,
-      })
-      .write();
+    const user = {
+      id: shortId.generate(),
+      username,
+      password,
+    };
 
-    res.redirect("/");
+    db.get("users").push(user).write();
+
+    req.logIn(user, (err) => {
+      if (err) throw err;
+
+      res.redirect("/");
+    });
   });
 
   router.get("/login", (req, res) => {

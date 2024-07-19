@@ -8,7 +8,8 @@ section.right_section
                 button(type="submit").delete_button delete  
         div 
             a(href=`${isLogined ? "/auth/logout_process" : "/auth/login"}`) #{isLogined ? "logout" : "login"}
-            a(href="/auth/register") register 
+            if !isLogined
+                a(href="/auth/register") register 
     div.description
         h1.title Description
         div.content
