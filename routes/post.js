@@ -2,6 +2,8 @@ const fs = require("fs");
 const path = require("path");
 const sanitizeHtml = require("sanitize-html");
 const express = require("express");
+const db = require("../lib/db");
+const shortId = require("shortid");
 
 const router = express.Router();
 
@@ -17,13 +19,16 @@ router.get("/write", (req, res) => {
 });
 
 router.post("/write_process", (req, res) => {
-  const post = req.body;
+  const post = {
+    id: shortId.generate(),
+    userId: req.user.id,
+    username: req.user.username,
+    title: req.body.title,
+    desc: req.body.desc,
+  };
 
-  fs.writeFile(`data/${post.title}`, post.desc, (err) => {
-    if (err) throw err;
-
-    res.redirect(302, `/post/${post.title}`);
-  });
+  db.get("posts").push(post).write();
+  res.redirect(302, `/post/${post.id}`);
 });
 
 router.get("/update/:pageId", (req, res) => {
@@ -71,18 +76,14 @@ router.post("/delete_process", (req, res) => {
 
 router.get("/:pageId", (req, res, next) => {
   const filteredId = path.parse(req.params.pageId).name;
+  const post = db.get("posts").find({ id: filteredId }).value();
 
-  fs.readFile(`data/${filteredId}`, "utf-8", (err, data) => {
-    if (err) next(err);
-
-    const sanitizedData = sanitizeHtml(data);
-
-    res.render("post", {
-      isLogined: req.user,
-      id: filteredId,
-      postList: req.postList,
-      desc: sanitizedData,
-    });
+  res.render("post", {
+    isLogined: req.user,
+    id: filteredId,
+    postList: req.postList,
+    title: sanitizeHtml(post.title),
+    desc: sanitizeHtml(post.desc),
   });
 });
 
