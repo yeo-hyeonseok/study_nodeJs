@@ -2,10 +2,12 @@ section.right_section
     div.controls
         div 
             a(href="/post/write") write 
-            a(href=`/post/update/${id}`) update
-            form(action="/post/delete_process", method="post").delete_form
-                input(type="hidden", name="id", value=`${id}`)
-                button(type="submit").delete_button delete  
+            if isLogined && isOwned 
+                a(href=`/post/update/${id}`) update
+            if isLogined && isOwned
+                form(action="/post/delete_process", method="post").delete_form
+                    input(type="hidden", name="id", value=`${id}`)
+                    button(type="submit").delete_button delete  
         div 
             a(href=`${isLogined ? "/auth/logout_process" : "/auth/login"}`) #{isLogined ? "logout" : "login"}
             if !isLogined

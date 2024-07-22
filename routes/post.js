@@ -33,45 +33,37 @@ router.post("/write_process", (req, res) => {
 
 router.get("/update/:pageId", (req, res) => {
   const filteredId = path.parse(req.params.pageId).name;
+  const post = db.get("posts").find({ id: filteredId }).value();
 
-  fs.readFile(`data/${filteredId}`, "utf-8", (err, data) => {
-    if (err) throw err;
-
-    const sanitizedData = sanitizeHtml(data);
-
-    res.render("write", {
-      postList: req.postList,
-      action: "/post/update_process",
-      id: filteredId,
-      title: filteredId,
-      desc: sanitizedData,
-    });
+  res.render("write", {
+    postList: req.postList,
+    action: "/post/update_process",
+    id: post.id,
+    title: sanitizeHtml(post.title),
+    desc: sanitizeHtml(post.desc),
   });
 });
 
 router.post("/update_process", (req, res) => {
-  const post = req.body;
+  const body = req.body;
+  const filteredId = path.parse(body.id).name;
 
-  fs.rename(`data/${post.id}`, `data/${post.title}`, (err) => {
-    if (err) throw err;
-
-    fs.writeFile(`data/${post.title}`, post.desc, (err) => {
-      if (err) throw err;
-
-      res.redirect(302, `/post/${post.title}`);
-    });
-  });
+  db.get("posts")
+    .find({ id: filteredId })
+    .assign({
+      title: body.title,
+      desc: body.desc,
+    })
+    .write();
+  res.redirect(302, `/post/${body.id}`);
 });
 
 router.post("/delete_process", (req, res) => {
-  const post = req.body;
-  const filteredId = path.parse(post.id).name;
+  const body = req.body;
+  const filteredId = path.parse(body.id).name;
 
-  fs.unlink(`data/${filteredId}`, (err) => {
-    if (err) throw err;
-
-    res.redirect(302, "/");
-  });
+  db.get("posts").remove({ id: filteredId }).write();
+  res.redirect(302, "/");
 });
 
 router.get("/:pageId", (req, res, next) => {
@@ -81,6 +73,7 @@ router.get("/:pageId", (req, res, next) => {
   res.render("post", {
     isLogined: req.user,
     id: filteredId,
+    isOwned: req.user?.id === post.userId,
     postList: req.postList,
     title: sanitizeHtml(post.title),
     desc: sanitizeHtml(post.desc),
