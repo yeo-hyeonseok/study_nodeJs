@@ -8,6 +8,7 @@ const helmet = require("helmet");
 const session = require("express-session");
 const FileStore = require("session-file-store")(session);
 const flash = require("connect-flash");
+const db = require("./lib/db");
 
 const app = express();
 
@@ -34,7 +35,7 @@ app.use(
 const passport = require("./lib/passport")(app);
 app.use(flash());
 app.get("*", (req, _, next) => {
-  req.postList = fs.readdirSync("data");
+  req.postList = db.get("posts").value();
   next();
 });
 
